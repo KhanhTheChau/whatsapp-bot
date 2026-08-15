@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments — .env KHÔNG được đưa vào image, nó được nạp lúc runtime
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Logs
+*.log
+logs/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Gemini / Antigravity
+.gemini/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Docs
+README.md

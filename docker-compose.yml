@@ -1,0 +1,40 @@
+services:
+  whatsapp-bot:
+    build: .
+    image: whatsapp-bot:latest
+    container_name: whatsapp-bot
+    restart: unless-stopped
+
+    # Nạp biến môi trường từ .env (copy từ .env.example rồi điền giá trị)
+    env_file:
+      - .env
+
+    ports:
+      - "${PORT:-5000}:5000"
+
+    # Container không có state cần ghi, khoá luôn filesystem cho an toàn
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+
+    # /webhook GET trả 403 khi thiếu token hợp lệ -> vẫn chứng minh app đang phục vụ.
+    # Chỉ coi là unhealthy khi không kết nối được cổng 5000.
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          python -c "import urllib.request;
+          urllib.request.urlopen('http://127.0.0.1:5000/webhook')" 2>&1
+          | grep -qE 'HTTP Error|200' || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
